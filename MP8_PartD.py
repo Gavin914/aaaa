@@ -45,4 +45,4 @@ df.createOrReplaceTempView("gbooks")
 
 # The above output may look slightly different for you due to ties with other words
 
-spark.sql("SELECT `_1`, COUNT(*) FROM gbooks GROUP BY `_1` ORDER BY COUNT(*) DESC").show(3)
+spark.sql("SELECT `word`, COUNT(*) FROM gbooks GROUP BY `_1` ORDER BY COUNT(*) DESC").show(3)
