@@ -47,5 +47,5 @@ df2.createOrReplaceTempView('gbooks2')
 
 # output: 166
 
-res = spark.sql("SELECT A.year FROM gbooks2 A, gbooks2 B WHERE A.year = B.year")
+res = spark.sql("SELECT A.`_1` FROM gbooks2 A, gbooks2 B WHERE A.`_1` = B.`_1`").show()
 print(res.count())
