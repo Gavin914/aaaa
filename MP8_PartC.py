@@ -40,7 +40,5 @@ df.createOrReplaceTempView("gbooks")
 # |      11|
 # +--------+
 
-df = df.filter(df['`_1`'] == 'ATTRIBUTE').collect()
-
-spark.sql("SELECT COUNT(*) FROM gbooks").show()
+spark.sql("SELECT COUNT(*) FROM gbooks WHERE `word` = 'ATTRIBUTE'").show()
 
