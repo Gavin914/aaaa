@@ -39,7 +39,7 @@ df = spark.createDataFrame(db.map(mapper, schema))
 # |      11|
 # +--------+
 
-df = df.where(col("word") == 'ATTRIBUTE').collect()
+df = df.where(col("_1") == 'ATTRIBUTE').collect()
 
 df.createOrReplaceTempView("gbooks")
 spark.sql("SELECT COUNT(*) FROM gbooks").show()
