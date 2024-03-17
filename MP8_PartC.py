@@ -3,6 +3,7 @@ from pyspark.sql.types import StructType
 from pyspark.sql.types import StructField
 from pyspark.sql.types import StringType, IntegerType
 from pyspark.sql import SparkSession
+from pyspark.sql.functions import col
 
 sc = SparkContext()
 spark = SparkSession.builder.getOrCreate()
@@ -38,7 +39,7 @@ df = spark.createDataFrame(db.map(mapper, schema))
 # |      11|
 # +--------+
 
-df = df.where(df.word == 'ATTRIBUTE').collect()
+df = df.where(col("word") == 'ATTRIBUTE').collect()
 
 df.createOrReplaceTempView("gbooks")
 spark.sql("SELECT COUNT(*) FROM gbooks").show()
