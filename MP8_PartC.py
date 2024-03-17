@@ -39,5 +39,5 @@ df.createOrReplaceTempView("gbooks")
 # |      11|
 # +--------+
 
-spark.sql("SELECT COUNT(*) FROM gbooks WHERE '_1' = 'ATTRIBUTE'").show()
+spark.sql("SELECT COUNT(*) FROM gbooks WHERE '_0' = 'ATTRIBUTE'").show()
 
