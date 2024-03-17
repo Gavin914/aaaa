@@ -40,7 +40,7 @@ df.createOrReplaceTempView("gbooks")
 # |      11|
 # +--------+
 
-df = df.filter(df["word"] == 'ATTRIBUTE').collect()
+df = df.filter(df["_1"] == 'ATTRIBUTE').collect()
 df.createOrReplaceTempView("gbooks")
 
 spark.sql("SELECT COUNT(*) FROM gbooks").show()
