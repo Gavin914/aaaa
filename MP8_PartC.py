@@ -26,7 +26,6 @@ int_fields = [StructField(name, IntegerType(), True) for name in ['year', 'frequ
 schema = StructType(word_fields + int_fields)
 
 df = spark.createDataFrame(db.map(mapper, schema))
-df.createOrReplaceTempView("gbooks")
 ####
 # 3. Filtering : Count the number of appearances of word 'ATTRIBUTE'
 ####
@@ -39,5 +38,8 @@ df.createOrReplaceTempView("gbooks")
 # |      11|
 # +--------+
 
-spark.sql("SELECT COUNT(*) FROM gbooks WHERE '_0' = 'ATTRIBUTE'").show()
+df = df.where(df.word == 'ATTRIBUTE').collect()
+
+df.createOrReplaceTempView("gbooks")
+spark.sql("SELECT COUNT(*) FROM gbooks").show()
 
