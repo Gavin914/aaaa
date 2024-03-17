@@ -1,11 +1,13 @@
+from pyspark.sql.functions import col, lag
 from pyspark import SparkContext
 from pyspark.sql.types import StructType
 from pyspark.sql.types import StructField
 from pyspark.sql.types import StringType, IntegerType
 from pyspark.sql import SparkSession
+from pyspark.sql.window import Window
+from pyspark.sql.functions import *
 
 sc = SparkContext()
-
 spark = SparkSession.builder.getOrCreate()
 
 ####
@@ -15,10 +17,6 @@ spark = SparkSession.builder.getOrCreate()
 # RDD API
 # Columns:
 # 0: word (string), 1: year (int), 2: frequency (int), 3: books (int)
-
-
-# Spark SQL - DataFrame API
-
 
 db = sc.textFile("gbooks")
 
@@ -33,18 +31,17 @@ def mapper(wrd):
 
 df = spark.createDataFrame(db.map(mapper, schema))
 
-####
-# 5. Joining : The following program construct a new dataframe out of 'df' with a much smaller size.
-####
+df_filtered = df.filter("`_2`"  >= 1500).filter("`_2`" <= 2000)
 
-df2 = df.select("`_1`", "`_2`").distinct().limit(100)
-df2.createOrReplaceTempView('gbooks2')
 
-# Now we are going to perform a JOIN operation on 'df2'. Do a self-join on 'df2' in lines with the same #'count1' values and see how many lines this JOIN could produce. Answer this question via Spark SQL API
+###
+# 2. Frequency Increase : analyze the frequency increase of words starting from the year 1500 to the year 2000
+###
+# Spark SQL - DataFrame API
 
-# Spark SQL API
-
-# output: 166
-
-res = spark.sql("SELECT A.`_1` FROM gbooks2 A, gbooks2 B WHERE A.`_2` = B.`_2`").count()
-print(res)
+window = Window.partitionBy("word").orderBy("year")
+df_with_increase = df_filtered.withColumn("prev_frequency", lag("frequency").over(window)) .withColumn("frequency_increase", col("frequency") - col("prev_frequency"))
+df_with_increase = df_with_increase.na.fill(value=0, subset=["frequency_increase"])
+df_total_increase = df_with_increase.groupBy("word").agg(sum("frequency_increase").alias("total_increase"))
+df_total_increase.orderBy(col("total_increase").desc()).show(5)
+# df_word_increase.show()
