@@ -42,5 +42,6 @@ schema = StructType(word_fields + int_fields)
 
 df = spark.createDataFrame(db.map(mapper, schema))
 df.createOrReplaceTempView("gbooks")
-spark.sql("SELECT COUNT(*) FROM gbooks").show()
+
+df.select("*").where(dataFrame("word") === "00650")
 
